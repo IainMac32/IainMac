@@ -1,0 +1,108 @@
+var start = millis();
+var milliseconds = 0;
+var seconds = 0;
+var gameOver = false;
+textAlign(CENTER, CENTER);
+
+var timer = function() {
+    milliseconds = millis() - start;
+    seconds = floor(milliseconds/1000);
+};
+
+var displayTime = function(){
+    fill(255,255,255);
+    textSize(20);
+    //text("milliseconds\n" + milliseconds, 200, 140);
+    text ("seconds\n" + seconds, 360,25);
+};
+
+
+var chompSpeed = 5;
+var pacMouth = 1;
+var pacMouthClose = 0;
+var points = 0;
+// white x and y spawn point
+var x = random(0,400);
+var y = random(0,400);
+// red spawn point
+var rx = random(0,400);
+var ry = random(0,400);
+var ghost = loadImage("https://images-na.ssl-images-amazon.com/images/I/61Q086n8MHL._SY355_.jpg");
+
+var draw = function() {
+    if(seconds >=60 || gameOver){
+        background(0);
+        textSize(40);
+        text("", 200,75);
+        text("Game Over",200,110);
+        textSize(30);
+        text("High Score:",200,330);
+        text("90 Points",200,370);
+        textSize(30);
+        text("Points: " + points, 200, 160);
+        
+        noLoop();
+        return;
+    }
+    background(0);
+    
+    // draw red dot
+    
+    fill(255,0,0);
+    imageMode(CENTER);
+    image(ghost, rx, ry, 30, 30);
+     //red ball to player distance
+     if (dist(mouseX, mouseY, rx, ry) < 23){
+        gameOver = true;
+     }
+
+    if (rx > x) {
+        rx -=0.37;
+    } else {
+        rx+=0.37;
+    }
+    if (ry > y) {
+        ry -=0.37;
+    } else {
+        ry+=0.37;
+    }
+    
+    // white ball
+    fill(255,255,255);
+    ellipse(x,y, 20,20);
+    if (dist(mouseX, mouseY, x, y) < 32){
+    if (rx > x) {
+        rx -=1;
+    } else {
+        rx+=1;
+    }
+    if (ry > y) {
+        ry -=1;
+    } else {
+        ry+=1;
+    }
+    x = random(0,400);
+    y = random(0,400);
+        points += 1;
+    }
+      // draw pacman
+    fill(255, 100, 0);
+    pacMouthClose = 360 - pacMouth;
+    arc(mouseX, mouseY, 50, 50, pacMouth, pacMouthClose);
+    if( pacMouth >= 45 || pacMouth <= 0) {
+        chompSpeed *= -1;
+    }
+    pacMouth += chompSpeed;
+    
+    // draw timer
+    textSize(20);
+    fill(255,255,255);
+    text("points: " + points, 50, 20);
+    timer();
+    displayTime();
+    function startGame(){
+        draw();
+        displayTime();
+        timer();
+    }
+};
